@@ -21,7 +21,7 @@ function App() {
         }
 
         try {
-            const response = await fetch('https://encurtador-api.vercel.app/', {
+            const response = await fetch('https://encurt.vercel.app/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
