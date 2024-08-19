@@ -9,7 +9,7 @@ function App() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:8080/public/index.php', {
+            const response = await fetch('https://encurtador-api.vercel.app/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
