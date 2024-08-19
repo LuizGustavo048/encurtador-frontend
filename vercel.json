@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "url-shortner-frontend/package.json",
+      "src": "package.json",
       "use": "@vercel/static-build"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/url-shortner-frontend/public/index.html"
+      "dest": "/public/index.html"
     }
   ]
 }
