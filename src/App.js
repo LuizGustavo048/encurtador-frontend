@@ -1,13 +1,25 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, CircularProgress, Alert } from '@mui/material';
 import { ContentCopy } from '@mui/icons-material';
 
 function App() {
     const [url, setUrl] = useState('');
     const [shortenedUrl, setShortenedUrl] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError('');
+
+        const urlPattern = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
+        if (!urlPattern.test(url)) {
+            setError('URL inválida. Por favor, insira uma URL válida.');
+            setLoading(false);
+            return;
+        }
+
         try {
             const response = await fetch('https://encurtador-api.vercel.app/', {
                 method: 'POST',
@@ -16,10 +28,17 @@ function App() {
                 },
                 body: JSON.stringify({ url }),
             });
+            
+            if (!response.ok) {
+                throw new Error('Erro ao encurtar a URL.');
+            }
+
             const result = await response.json();
             setShortenedUrl(result.short_url);
         } catch (error) {
-            console.error('Error:', error);
+            setError('Ocorreu um erro ao encurtar a URL. Tente novamente.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -39,6 +58,7 @@ function App() {
                     fullWidth
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
+                    helperText="Digite a URL completa, incluindo http:// ou https://"
                 />
                 <Button 
                     type="submit" 
@@ -46,10 +66,16 @@ function App() {
                     color="primary" 
                     fullWidth 
                     sx={{ mt: 2 }}
+                    disabled={loading}
                 >
-                    Encurtar URL
+                    {loading ? <CircularProgress size={24} color="inherit" /> : 'Encurtar URL'}
                 </Button>
             </Box>
+            {error && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                    {error}
+                </Alert>
+            )}
             {shortenedUrl && (
                 <Box sx={{ mt: 4 }}>
                     <Typography variant="h6">URL Encurtada:</Typography>
